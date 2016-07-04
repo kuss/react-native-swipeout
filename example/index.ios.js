@@ -3,4 +3,4 @@ import {
   AppRegistry,
 } from 'react-native';
 
-AppRegistry.registerComponent('swipeoutExample', () => SwipeoutExample);
+AppRegistry.registerComponent('example', () => SwipeoutExample);

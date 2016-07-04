@@ -1,7 +1,9 @@
-var React = require('react')
-var {StyleSheet} = React
+import React from 'react';
+import {
+  StyleSheet,
+} from 'react-native';
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f2f2f2',
     flex: 1,
@@ -43,6 +45,6 @@ var styles = StyleSheet.create({
     backgroundColor: '#fff',
     height: 22,
   }
-})
+});
 
-module.exports = styles
+export default styles;

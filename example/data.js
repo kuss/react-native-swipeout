@@ -1,15 +1,15 @@
 import React from 'react';
-import {Image} from 'react-native';
+import { Image } from 'react-native';
 
-var btnsDefault = [ { text: 'Button' } ];
+const btnsDefault = [ { text: 'Button' } ];
 
-var btnsTypes = [
+const btnsTypes = [
   { text: 'Primary',    type: 'primary',   },
   { text: 'Secondary',  type: 'secondary', },
   { text: 'Delete',     type: 'delete',    }
 ];
 
-var rows = [
+const rows = [
   {
     text: "Basic Example",
     right: btnsDefault,

@@ -5,17 +5,22 @@ import rows from './data';
 //  example styles
 import styles from './styles';
 
-import React, {Component} from 'react';
-import {AppRegistry, StyleSheet, ListView, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import {
+  AppRegistry,
+  StyleSheet,
+  ListView,
+  Text,
+  View,
+} from 'react-native';
 
 //  example swipout app
 class SwipeoutExample extends Component {
-
   constructor() {
     super();
 
     //  datasource rerendered when change is made (used to set swipeout to active)
-    var ds = new ListView.DataSource({rowHasChanged: (row1, row2) => true});
+    const ds = new ListView.DataSource({rowHasChanged: (row1, row2) => true});
 
     this.state = {
       dataSource: ds.cloneWithRows(rows),
@@ -30,7 +35,7 @@ class SwipeoutExample extends Component {
 
   //  set active swipeout item
   _handleSwipeout(sectionID, rowID) {
-    for (var i = 0; i < rows.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
       if (i != rowID) rows[i].active = false;
       else rows[i].active = true;
     }
