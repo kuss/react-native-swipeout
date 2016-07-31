@@ -58,6 +58,10 @@ class SwipeoutExample extends Component {
         right={rowData.right}
         closeOnPressButton={rowData.autoClose}
 
+        leftOver={rowData.leftOver}
+        rightOver={rowData.rightOver}
+        shrinkOnOverSwipe={rowData.shrinkOnOverSwipe}
+
         rowID={rowID}
         sectionID={sectionID}
 

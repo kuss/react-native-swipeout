@@ -43,19 +43,19 @@ class Swipeout extends React.Component {
     this.state = {
       contentWidth: 0,
       contentHeight: 0,
-      contentEndHeight: 0,
       contentPos: 0,
       contentEndPos: 0,
 
       openedLeft: false,
       openedRight: false,
-      enableLeft: this.props.left || this.props.leftOver || false,
-      enableRight: this.props.right || this.props.rightOver || false,
+      enableLeft: this.props.left || this.props.rightOver || false,
+      enableRight: this.props.right || this.props.leftOver || false,
 
-      motionDuration: 160,
       motionStart: null,
       touching: false,
       swiping: false,
+      shrinking: false,
+      disappeared: false,
 
       fullLeftWidth: 0,
       fullLeftRight: 0,
@@ -77,6 +77,8 @@ class Swipeout extends React.Component {
     this.renderButtons = this.renderButtons.bind(this);
     this.renderButton = this.renderButton.bind(this);
     this.onPressBtn = this.onPressBtn.bind(this);
+
+    this.onRest = this.onRest.bind(this);
   }
 
   componentWillMount() {
@@ -94,11 +96,11 @@ class Swipeout extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.left && nextProps.leftOver) {
-      throw new Error("Swipeout props: left and leftOver cannot be assigned at once")
+    if (nextProps.left && nextProps.rightOver) {
+      throw new Error("Swipeout props: left and rightOver cannot be assigned at once")
     }
-    if (nextProps.right && nextProps.rightOver) {
-      throw new Error("Swipeout props: right and rightOver cannot be assigned at once")
+    if (nextProps.right && nextProps.leftOver) {
+      throw new Error("Swipeout props: right and leftOver cannot be assigned at once")
     }
 
     if (nextProps.close) {
@@ -115,14 +117,14 @@ class Swipeout extends React.Component {
       let fullLeftWidth = 0;
       if (this.props.left) {
         fullLeftWidth = btnWidth * this.props.left.length;
-      } else if (this.props.leftOver) {
+      } else if (this.props.rightOver) {
         fullLeftWidth = width;
       }
 
       let fullRightWidth = 0;
       if (this.props.right) {
         fullRightWidth = btnWidth * this.props.right.length;
-      } else if (this.props.rightOver) {
+      } else if (this.props.leftOver) {
         fullRightWidth = width;
       }
 
@@ -131,7 +133,7 @@ class Swipeout extends React.Component {
         fullLeftWidth,
         fullRightWidth,
         touching: true,
-        timeStart: (new Date()).getTime(),
+        motionStart: (new Date()).getTime(),
       });
     });
   }
@@ -191,7 +193,7 @@ class Swipeout extends React.Component {
     }
 
     //  reveal swipeout on quick swipe
-    const timeDiff = (new Date()).getTime() - this.state.timeStart < 200;
+    const timeDiff = (new Date()).getTime() - this.state.motionStart < 200;
     if (timeDiff) {
       openRight = posX < -openX/10 && !this.state.openedLeft;
       openLeft = posX > openX/10 && !this.state.openedRight;
@@ -227,25 +229,70 @@ class Swipeout extends React.Component {
 
   close() {
     this.setState({
+      swiping: true,
       contentEndPos: 0,
+      contentPos: 0,
       openedRight: false,
       openedLeft: false,
     });
   }
 
-  render() {
-    const contentWidth = this.state.contentWidth;
-    const styleSwipeout = [styles.swipeout, this.props.style];
+  onRest() {
+    let shrinking = this.state.shrinking;
+    let contentHeight = this.state.contentHeight;
+    let disappeared = this.state.disappeared;
 
-    let motionStyle = { x: this.state.contentPos };
+    if (this.props.shrinkOnOverSwipe) {
+      if (this.state.openedLeft || this.state.openedRight) {
+        shrinking = true;
+      }
+      if (this.state.shrinking) {
+        shrinking = false;
+        disappeared = true;
+        contentHeight = 0;
+      }
+    }
+
+    this.setState({
+      shrinking,
+      swiping: false,
+      disappeared,
+      contentHeight,
+    });
+
+    if (this.props.didOpen) {
+      this.props.didOpen(true);
+    }
+
+    if (this.motion) {
+      this.motion.startAnimationIfNecessary();
+    }
+  }
+
+  render() {
+    if (this.state.disappeared) {
+      return ( <View/> );
+    }
+
+    const contentWidth = this.state.contentWidth;
+    const contentHeight = this.state.contentHeight;
+
+    let motionStyle = { x: this.state.contentPos, height: contentHeight };
     if (!this.state.touching && this.state.swiping) {
-      motionStyle = { x: spring(this.state.contentEndPos, presets.gentle) };
+      motionStyle.x = spring(this.state.contentEndPos, presets.gentle);
+    }
+    if (this.state.shrinking) {
+      motionStyle.height = spring(0, presets.gentle);
     }
 
     return (
-      <Motion style={motionStyle}>
-        {({ x })  => {
+      <Motion style={motionStyle} onRest={this.onRest} ref={(c) => this.motion = c}>
+        {({ x, height })  => {
           const posX = x;
+
+          if (height < 1) {
+            height = 0;
+          }
 
           let limit = -this.state.fullRightWidth;
           if (posX > 0) {
@@ -282,6 +329,9 @@ class Swipeout extends React.Component {
 
           const isRightVisible = posX < 0;
           const isLeftVisible = posX > 0;
+
+          const styleSwipeout = [styles.swipeout, this.props.style];
+          styleSwipeout.push({ height });
 
           return (
             <View style={styleSwipeout}>

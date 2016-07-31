@@ -45,6 +45,14 @@ const rows = [
     right: btnsDefault,
     autoClose: true,
   }, {
+    text: "Overswiping to right",
+    rightOver: true,
+    shrinkOnOverSwipe: true,
+  }, {
+    text: "Overswiping to left",
+    leftOver: true,
+    shrinkOnOverSwipe: true,
+  }, {
     text: "Five buttons (full-width) + autoClose={true}",
     right: [
       { text: 'One'},
