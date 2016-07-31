@@ -26,6 +26,7 @@ class Swipeout extends React.Component {
 
     onOpen: PropTypes.func,
     didOpen: PropTypes.func,
+    didShrink: PropTypes.func,
 
     onScroll: PropTypes.func,
     sensitivity: PropTypes.number,
@@ -250,6 +251,10 @@ class Swipeout extends React.Component {
         shrinking = false;
         disappeared = true;
         contentHeight = 0;
+
+        if (this.props.didShrink) {
+          this.props.didShrink(true);
+        }
       }
     }
 
