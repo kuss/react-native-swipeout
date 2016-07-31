@@ -97,7 +97,7 @@ class NativeButton extends React.Component {
         <TouchableNativeFeedback
           {...buttonProps}>
           <View style={[styles.button, this.props.style, disabledStyle]}>
-            {this._renderText()}
+            {this.renderText()}
           </View>
         </TouchableNativeFeedback>
       );
@@ -109,7 +109,7 @@ class NativeButton extends React.Component {
         {...buttonProps}
         style={[styles.button, this.props.style, disabledStyle]}
         underlayColor={ this.props.underlayColor }>
-        { this._renderText() }
+        { this.renderText() }
       </TouchableHighlight>
     );
   }

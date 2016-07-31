@@ -51,15 +51,18 @@ class SwipeoutExample extends Component {
   _renderRow(rowData: string, sectionID: number, rowID: number) {
     return (
       <Swipeout
+        style={{ backgroundColor: rowData.backgroundColor }}
+        close={!rowData.active}
+
         left={rowData.left}
         right={rowData.right}
+        closeOnPressButton={rowData.autoClose}
+
         rowID={rowID}
         sectionID={sectionID}
-        autoClose={rowData.autoClose}
-        backgroundColor={rowData.backgroundColor}
-        close={!rowData.active}
+
         onOpen={(sectionID, rowID) => this._handleSwipeout(sectionID, rowID) }
-        scroll={event => this._allowScroll(event)}>
+        onScroll={event => this._allowScroll(event)}>
         <View style={styles.li}>
           <Text style={styles.liText}>{rowData.text}</Text>
         </View>

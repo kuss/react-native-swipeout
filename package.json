@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-		"lint": "eslint ."
+    "lint": "eslint example"
   },
   "repository": {
     "type": "git",
@@ -27,8 +27,7 @@
   },
   "homepage": "https://github.com/dancormier/react-native-swipeout",
   "dependencies": {
-    "react-mixin": "^2.0.2",
-    "react-tween-state": "^0.1.5"
+    "react-motion": "^0.4.4"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
