@@ -52,7 +52,6 @@ class SwipeoutExample extends Component {
     return (
       <Swipeout
         style={{ backgroundColor: rowData.backgroundColor }}
-        close={!rowData.active}
 
         left={rowData.left}
         right={rowData.right}

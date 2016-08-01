@@ -55,7 +55,6 @@ class Swipeout extends React.Component {
       motionStart: null,
       touching: false,
       swiping: false,
-      shrinking: false,
       disappeared: false,
 
       fullLeftWidth: 0,
@@ -239,18 +238,11 @@ class Swipeout extends React.Component {
   }
 
   onRest() {
-    let shrinking = this.state.shrinking;
-    let contentHeight = this.state.contentHeight;
     let disappeared = this.state.disappeared;
 
     if (this.props.shrinkOnOverSwipe) {
-      if (this.state.openedLeft || this.state.openedRight) {
-        shrinking = true;
-      }
-      if (this.state.shrinking) {
-        shrinking = false;
+      if ((this.state.openedLeft && this.props.rightOver) || (this.state.openedRight && this.props.leftOver)) {
         disappeared = true;
-        contentHeight = 0;
 
         if (this.props.didShrink) {
           this.props.didShrink(true);
@@ -259,18 +251,12 @@ class Swipeout extends React.Component {
     }
 
     this.setState({
-      shrinking,
       swiping: false,
       disappeared,
-      contentHeight,
     });
 
     if (this.props.didOpen) {
       this.props.didOpen(true);
-    }
-
-    if (this.motion) {
-      this.motion.startAnimationIfNecessary();
     }
   }
 
@@ -286,7 +272,10 @@ class Swipeout extends React.Component {
     if (!this.state.touching && this.state.swiping) {
       motionStyle.x = spring(this.state.contentEndPos, presets.gentle);
     }
-    if (this.state.shrinking) {
+
+    // Controlling overswipe
+    const opened = this.state.openedLeft || this.state.openedRight || false;
+    if (this.props.shrinkOnOverSwipe && this.state.swiping && opened) {
       motionStyle.height = spring(0, presets.gentle);
     }
 
